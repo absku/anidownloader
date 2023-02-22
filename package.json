@@ -4,7 +4,7 @@
   "description": "Anime chapter downloader from multiple sites",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js",
+    "start": "node --no-warnings src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -19,7 +19,10 @@
     "puppeteer-extra": "^3.3.4",
     "puppeteer-extra-plugin-adblocker": "^2.13.5",
     "puppeteer-extra-plugin-stealth": "^2.11.1",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "sequelize": "^6.28.0",
+    "sqlite3": "^5.1.4",
+    "webtorrent": "^2.0.13"
   },
   "type": "module"
 }

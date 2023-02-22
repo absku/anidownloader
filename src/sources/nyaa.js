@@ -1,5 +1,6 @@
 import Scraper from "../core/scraper/index.js";
 import jsdom from "jsdom";
+import EpisodeInfo from "../core/EpisodeInfo/episodeInfo.js";
 
 class Nyaa {
     constructor() {
@@ -11,19 +12,21 @@ class Nyaa {
         const html = (await scraper.get_page()).html;
         const dom = new jsdom.JSDOM(html);
         const rows = dom.window.document.querySelectorAll("table.table.table-bordered.table-hover tbody tr");
-        const torrents = [];
-        rows.forEach(row => {
-            const torrent = new NyaaTorrent();
-            torrent.url = row.querySelector("td:nth-child(2) a:not(.comments)").href;
-            torrent.name = row.querySelector("td:nth-child(2) a:not(.comments)").innerHTML;
-            torrent.magnet = row.querySelectorAll("td:nth-child(3) a")[1].href;
-            torrent.size = row.querySelector("td:nth-child(4)").innerHTML;
-            torrent.date = row.querySelector("td:nth-child(5)").innerHTML;
-            torrent.seeds = row.querySelector("td:nth-child(6)").innerHTML;
-            torrent.leeches = row.querySelector("td:nth-child(7)").innerHTML;
-            torrents.push(torrent);
+        return new Promise((resolve, reject) => {
+            const episodes = [];
+            rows.forEach(row => {
+                const episode = new NyaaEpisode();
+                episode.url = row.querySelector("td:nth-child(2) a:not(.comments)").href;
+                episode.name = row.querySelector("td:nth-child(2) a:not(.comments)").innerHTML;
+                episode.magnet = row.querySelectorAll("td:nth-child(3) a")[1].href;
+                episode.size = row.querySelector("td:nth-child(4)").innerHTML;
+                episode.date = row.querySelector("td:nth-child(5)").innerHTML;
+                episode.seeds = row.querySelector("td:nth-child(6)").innerHTML;
+                episode.leeches = row.querySelector("td:nth-child(7)").innerHTML;
+                episodes.push(episode);
+            });
+            resolve(episodes);
         });
-        return torrents;
     }
 
     filterTorrents(torrents, filters) {
@@ -44,7 +47,7 @@ class Nyaa {
     }
 }
 
-class NyaaTorrent {
+class NyaaEpisode {
     constructor() {
         this.url = "";
         this.name = "";
@@ -53,7 +56,17 @@ class NyaaTorrent {
         this.date = "";
         this.seeds = "";
         this.leeches = "";
+        this.server = "Torrent";
+    }
+
+    formatToEpisodeInfo(serie, server = "Torrent") {
+        const episode = new EpisodeInfo();
+        episode.link = this.magnet;
+        episode.server = this.server;
+        episode.serie = serie;
+        episode.name = this.name;
+        return episode;
     }
 }
 
-export default Nyaa;
+export { Nyaa, NyaaEpisode }
