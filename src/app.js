@@ -60,7 +60,7 @@ async function process_series(series) {
                     } else {
                         ep = episode.formatToEpisodeInfo(serie);
                     }
-                    ep.createPath('H:/Anime/');
+                    ep.createPath('H:/Shared/Animes/');
                     episodesForDownload.push(ep);
                 }
             }
@@ -85,6 +85,8 @@ async function saveEpisodesDownloaded(episodes) {
 
 async function main() {
     const series = await get_series_by_sources(['nyaa', 'animeflv']);
+    // const series = await get_series_by_sources(['animeflv']);
+    // const series = await get_series_by_sources(['nyaa']);
     const episodes = await process_series(series);
     const episodeDownloadManager = new EpisodeDownloadManager();
     episodes.forEach(episode => {

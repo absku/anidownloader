@@ -25,8 +25,13 @@ class ZippyshareDownloader {
         const downloadLink = await this.getLink(url);
         const fileName = downloadLink.split("/").pop();
         const filePath = path + fileName;
+
+        if (!fs.existsSync(path)) {
+            fs.mkdirSync(path, { recursive: true });
+        }
         
         const file = fs.createWriteStream(filePath);
+
         let receivedBytes = 0;
         let progressBar;
         request.get(downloadLink)
